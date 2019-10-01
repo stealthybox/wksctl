@@ -104,6 +104,15 @@ func (git Client) Add(files ...string) error {
 	return nil
 }
 
+// RmRecursive performs can perform a `git rm` operation on the given file paths
+func (git Client) RmRecursive(files ...string) error {
+	args := append([]string{"rm", "-r", "--"}, files...)
+	if err := git.runGitCmd(args...); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Commit makes a commit if there are staged changes
 func (git Client) Commit(message, user, email string) error {
 	// Note, this used to do runGitCmd(diffCtx, git.dir, "diff", "--cached", "--quiet", "--", fi.opts.gitFluxPath); err == nil {
