@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/weaveworks/wksctl/cmd/wksctl/profile/constants"
 	"github.com/weaveworks/wksctl/pkg/git"
 )
 
@@ -30,11 +31,9 @@ func init() {
 	Cmd.Flags().BoolVarP(&profileEnableOptions.noCommit, "no-commit", "", false, "no auto commit and push behaviour")
 }
 
-const ProfilesStorePrefix = "profiles"
-
 func profileEnableArgs(cmd *cobra.Command, args []string) error {
 	if len(args) != 0 {
-		return errors.New("profile does not require any argument")
+		return errors.New("profile enable does not require any argument")
 	}
 	return nil
 }
@@ -48,8 +47,8 @@ func profileEnableRun(cmd *cobra.Command, args []string) {
 		log.Fatal(errors.New("profile repository must be specified"))
 	}
 
-	if repoUrl == "app-dev" {
-		repoUrl = "git@github.com:weaveworks/eks-quickstart-app-dev"
+	if repoUrl == constants.AppDevAlias {
+		repoUrl = constants.AppDevRepoURL
 	}
 
 	revision, err := cmd.Flags().GetString("revision")
@@ -67,7 +66,7 @@ func profileEnableRun(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	clonePath := path.Join(ProfilesStorePrefix, hostName, repoName)
+	clonePath := path.Join(constants.ProfilesStorePrefix, hostName, repoName)
 	log.Infof("Cloning into %q ...", clonePath)
 	err = profileCli.CloneRepoInPath(clonePath, git.CloneOptions{
 		URL:      repoUrl,
