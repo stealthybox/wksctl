@@ -67,6 +67,11 @@ func profileEnableRun(cmd *cobra.Command, args []string) {
 	}
 
 	clonePath := path.Join(constants.ProfilesStorePrefix, hostName, repoName)
+	// Stat and found means it already exists
+	if _, err := os.Stat(clonePath); err == nil {
+		log.Fatal("Profile already existed. Please disable before re-enable it again.")
+	}
+
 	log.Infof("Cloning into %q ...", clonePath)
 	err = profileCli.CloneRepoInPath(clonePath, git.CloneOptions{
 		URL:      repoUrl,
